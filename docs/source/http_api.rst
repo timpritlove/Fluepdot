@@ -125,7 +125,7 @@ PUT /rendering/mode
 Params
     GET
         **None**
-    POST
+    PUT
         ASCII printed integer, which value is to be interpreted as stated above.
 
 Rendering timings encoding
