@@ -185,3 +185,6 @@ partition_table-flash_args
 partition-table-flash_args
 x509_crt_bundle.S
 managed_components
+
+# alternative idf.py build directories (e.g. idf.py -B build_verify)
+build_*/
