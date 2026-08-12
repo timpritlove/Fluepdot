@@ -42,9 +42,14 @@ Features:
 - CLI for configuration and testing purposes
 - mDNS for simple service discovery
 - HTTP API for framebuffer manipulations
-- SNMP for monitoring and framebuffer manipulations
-- BT LE support for framebuffer manipulations
+- UDP API for raw framebuffer streaming (port 1337)
 - C flipdot library for custom applications
+
+.. note::
+   **SNMP** and **BT LE** support were part of earlier firmware versions but are
+   **not included** in the current firmware build. The RS485 transceiver is
+   present on the hardware, but the firmware does not implement RS485
+   communication yet.
 
 .. toctree ::
    :caption: USAGE

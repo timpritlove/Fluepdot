@@ -6,20 +6,19 @@
 #pragma once
 
 #include "flipdot_gpio.h"
-#include "flipdot_rendering_options.h"
 
 #include <stdint.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/semphr.h"
 #include "esp_err.h"
 
-// How long to wait before rendering a column (in 10ms counts)
+// How long to wait before rendering a column (in 50 microsecond steps)
 #define FLIPDOT_RENDERING_OPTIONS_PRE_DELAY_DEFAULT 0
 
-// How long to power the column clear low side driver by default (in 10ms counts)
+// How long to power the row high side drivers by default (in 50 microsecond steps)
 #define FLIPDOT_RENDERING_OPTIONS_SET_DELAY_DEFAULT 160
 
-// How long to power the row high side drivers by default (in 10ms counts)
+// How long to power the column clear low side driver by default (in 50 microsecond steps)
 #define FLIPDOT_RENDERING_OPTIONS_CLEAR_DELAY_DEFAULT 160
 
 // Flipdot rendering mode
@@ -40,17 +39,17 @@ typedef enum {
   */
 typedef struct {
     /**
-      * How long to wait before rendering a column (in 10ms counts)
+      * How long to wait before rendering a column (in 50 microsecond steps)
       */
     uint16_t pre_delay;
 
     /**
-      * How long to power the row high side drivers (in 10ms counts)
+      * How long to power the column clear low side driver (in 50 microsecond steps)
       */
     uint16_t clear_delay;
     
     /**
-      * How long to power the column clear low side driver (in 10ms counts)
+      * How long to power the row high side drivers (in 50 microsecond steps)
       */
     uint16_t set_delay;
 } flipdot_rendering_delay_options_t;

@@ -281,7 +281,7 @@ esp_err_t flipdot_render(flipdot_t* flipdot) {
         current_panel_index = flipdot->internal_rendering_options->panel_order[i];
         current_panel = &flipdot->panels[current_panel_index];
 
-        FLIPDOT_ERROR_CHECK(
+        FLIPDOT_ERROR_SHOW(error,
                 flipdot_framebuffer_compare_partial(
                     flipdot->framebuffer_internal,
                     flipdot->framebuffer_internal_old,
@@ -289,6 +289,10 @@ esp_err_t flipdot_render(flipdot_t* flipdot) {
                     current_panel->width,
                     &pixels_changed));
 
+        if (error != ESP_OK) {
+            xSemaphoreGive(flipdot->semaphore);
+            return error;
+        }
 
         if ((flipdot->internal_rendering_options->mode == DIFFERENTIAL)
                 && (pixels_changed == 0)) {
@@ -296,7 +300,12 @@ esp_err_t flipdot_render(flipdot_t* flipdot) {
             continue;
         }
 
-        FLIPDOT_ERROR_CHECK(flipdot_render_panel(flipdot, current_panel_index));
+        FLIPDOT_ERROR_SHOW(error, flipdot_render_panel(flipdot, current_panel_index));
+
+        if (error != ESP_OK) {
+            xSemaphoreGive(flipdot->semaphore);
+            return error;
+        }
     }
  
     xSemaphoreGive(flipdot->semaphore);
@@ -319,7 +328,7 @@ static esp_err_t flipdot_cycle_internal_datastructures(flipdot_t* flipdot) {
 
     // copy framebuffer to internal framebuffer
     flipdot_framebuffer_free(flipdot->framebuffer_internal);
-    flipdot->framebuffer_internal = calloc(1, sizeof(flipdot_rendering_options_t));
+    flipdot->framebuffer_internal = calloc(1, sizeof(framebuffer_t));
     FLIPDOT_ASSERT_NOT_NULL(flipdot->framebuffer_internal, ESP_ERR_NO_MEM);
     FLIPDOT_ERROR_CHECK(flipdot_framebuffer_copy(flipdot->framebuffer_internal, flipdot->framebuffer));
   

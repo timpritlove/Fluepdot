@@ -21,14 +21,14 @@ Perform the following steps:
 
 
 2. Connect the panel's select pins to the PCB. Pinout is given in the rendering.
-   The order is left (0) to right (5), assuming panel's "top" is where the very long connector with huge amounts of pins is.
+   The order is left (0) to right (4), assuming panel's "top" is where the very long connector with huge amounts of pins is.
 
    .. figure:: _static/panel_select.jpg
       :alt: Panel select
    
       Panel select pin (highlighted)
 
-   In case you mess with the panel order, there are CLI commands for changing the order in software.
+   In case you mess with the panel order, simply swap the select wires into the correct order.
 
 3. Provide 12V and at least 3A to the PCB as displayed on the pinout above.
 
@@ -58,11 +58,13 @@ USB-to-serial chip in use is a **CP2102N**. Users of linux based operating syste
     screen /dev/ttyUSB0 115200
 
 
-1. Configure the fluepdot panel layout
+1. Configure the fluepdot panel layout by passing the width (in pixels) of each
+   attached panel from left to right (up to 5 panels, each 20 to 25 pixels wide).
+   For example, for five panels with widths 25, 25, 20, 20 and 25:
 
    .. code:: bash
 
-    TODO
+    config_panel_layout 25 25 20 20 25
 
 2. *Optional*: Set a hostname
 

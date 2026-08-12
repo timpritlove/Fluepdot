@@ -48,6 +48,9 @@ Type ``help`` to get a list of available commands:
     show_tasks
       Get information about running tasks
     
+    show_ip
+      Show IP configuration
+    
     config_save
       Save the current system configuration to flash
     
@@ -70,6 +73,10 @@ Type ``help`` to get a list of available commands:
             <ssid>  WiFi SSID
         <password>  WiFi Password
     
+    config_rendering_mode  <mode>
+      Set default rendering mode to use on power up
+            <mode>  full/differential
+    
     config_hostname  <hostname>
       Set system hostname
         <hostname>  Hostname
@@ -81,6 +88,11 @@ Type ``help`` to get a list of available commands:
     flipdot_clear  [--invert]
       Clear the flipdot
           --invert  Set all pixels to white instead of black
+    
+    framebuf64  <framebuf64>
+      Set the framebuffer from a base64 encoded raw framebuffer
+      (2 bytes per column, see the UDP raw API for the encoding)
+      <framebuf64>  base64 encoded framebuffer
     
     show_fonts
       List installed fonts

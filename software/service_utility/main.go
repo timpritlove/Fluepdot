@@ -64,11 +64,12 @@ func main() {
 		os.Exit(3)
 	}
 
-	// flash partition table
-	flash(esp32, "../firmware/partition_table/partition-table.bin", 0x800)
-	flash(esp32, "../firmware/bootloader/bootloader.bin", 0xd000)
+	// standard ESP32 flash layout, matching partitions.csv and the
+	// esptool.py invocation documented in docs/source/firmware_update.rst
+	flash(esp32, "../firmware/bootloader/bootloader.bin", 0x1000)
+	flash(esp32, "../firmware/partition_table/partition-table.bin", 0x8000)
+	flash(esp32, "../firmware/ota_data_initial.bin", 0xd000)
 	flash(esp32, "../firmware/flipdot-firmware.bin", 0x10000)
-	flash(esp32, "../firmware/ota_data_initial.bin", 0xD000)
 
 	logger.Println("Firmware written to device. Have fun.")
 }

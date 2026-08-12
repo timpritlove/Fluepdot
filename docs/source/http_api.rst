@@ -10,7 +10,7 @@ For simple integration into your projects, the *fluepboard* firmwares ships with
 Framebuffer encoding
 --------------------
 
-Framebuffers are **ASCII**-encoded. The only allowed characters are **<space>** ``0x20``, **X** ``0x58`` and **``\\n``** ``\0x0A``.
+Framebuffers are **ASCII**-encoded. The only allowed characters are **<space>** ``0x20``, **X** ``0x58`` and **``\\n``** ``0x0A``.
 
 A **bright** (set) pixel is encoded as an X.
 
@@ -155,8 +155,8 @@ Each line contains the decimal value in ascii-encoded form.
    Powering a coil repeatedly for a long duration *might* cause the coil to overheat and or fail.
    Decreasing the timings might result in higher **framerate**, but might result in not all pixels flipping.
 
-   Usually **1600uS** are enough to reliably flip all pixels.
-   This is the **default**.
+   The firmware **default** is 160 steps, i.e. **8000uS** per clear/set pulse.
+   Usually **1600uS** (a value of ``00032``) are enough to reliably flip all pixels.
 
 GET /rendering/timings
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -173,3 +173,17 @@ Params
         Timing configuration as explained above.
 
 Set the timing configuration.
+
+Rendering synchronization
+-------------------------
+
+GET /rendering/wait
+^^^^^^^^^^^^^^^^^^^
+
+Params
+    GET
+        **None**
+
+Waits (up to 3 seconds) until the current rendering operation has finished.
+Returns ``ok`` on success, or HTTP status 500 if the rendering did not finish
+within the timeout.

@@ -1,6 +1,11 @@
 SNMP
 ====
 
+.. warning::
+   The SNMP implementation described below was **removed from the firmware** and is
+   **not part of the current build** (``CONFIG_LWIP_SNMP_SUPPORT`` is disabled and no
+   SNMP sources are compiled). This chapter is kept for reference only.
+
 To serious business people and for optimal integration into your existing enterprise network, the *fluepboard* firmware offers SNMP integration.
 
 The SNMP implementation provides **monitoring**, full control over **framebuffer** and rendering options as well as an **IF-MIB**, **IP-MIB** and **TCP/UDP-MIB** implementation.
@@ -118,6 +123,6 @@ Usage examples
 
     .. code:: bash
 
-        snmpget -v 2c -c public -m ../util/FLUEPDOT.mib 192.168.178.94 FLUEPDOT-MIB::pixelsFlipped.0
+        snmpget -v 2c -c public -m ./util/FLUEPDOT.mib 192.168.178.94 FLUEPDOT-MIB::pixelsFlipped.0
 
 .. _snmp_exporter: https://github.com/prometheus/snmp_exporter

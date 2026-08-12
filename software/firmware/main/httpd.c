@@ -229,6 +229,8 @@ static esp_err_t http_api_put_rendering_mode(httpd_req_t *req) {
             goto ERROR;
     }
 
+    free(buf);
+
     return http_api_get_rendering_mode(req);
 
 ERROR:
@@ -271,9 +273,11 @@ esp_err_t http_api_post_rendering_timings(httpd_req_t *req) {
     char buf[19];
 
     for (int x=0; x<flipdot.width; x++) {
+        // each column consists of 3 lines with 5 digits plus '\n' = 18 bytes,
+        // matching the output of http_api_get_rendering_timings
         size_t received = 0;
-        while (received < sizeof(buf)) {
-            int ret = httpd_req_recv(req, &buf[received], sizeof(buf) - received);
+        while (received < sizeof(buf) - 1) {
+            int ret = httpd_req_recv(req, &buf[received], sizeof(buf) - 1 - received);
             if (ret <= 0) {
                 if (ret == HTTPD_SOCK_ERR_TIMEOUT) {
                     httpd_resp_send_408(req);
@@ -282,10 +286,11 @@ esp_err_t http_api_post_rendering_timings(httpd_req_t *req) {
             }
             received += ret;
         }
+        buf[sizeof(buf) - 1] = 0;
         if (sscanf(buf, "%05hd\n%05hd\n%05hd",
                     &(flipdot.rendering_options->delay_options[x].pre_delay),
                     &(flipdot.rendering_options->delay_options[x].clear_delay),
-                    &(flipdot.rendering_options->delay_options[x].set_delay)) == 0) {
+                    &(flipdot.rendering_options->delay_options[x].set_delay)) != 3) {
             return ESP_ERR_INVALID_ARG;
         }
     }
@@ -337,6 +342,8 @@ static esp_err_t http_api_post_framebuffer_text(httpd_req_t *req) {
     char* buf = malloc(buf_len);
 
     if (text == NULL || buf == NULL) {
+        free(text);
+        free(buf);
         return ESP_ERR_NO_MEM;
     }
 
@@ -365,7 +372,7 @@ static esp_err_t http_api_post_framebuffer_text(httpd_req_t *req) {
     error = httpd_query_key_value(buf, "font", param_font, sizeof(param_font));
     if (error != ESP_OK) {
         if (error == ESP_ERR_NOT_FOUND) {
-            strcpy(param_font, "DejaVuSans");
+            strcpy(param_font, "DejaVuSans12");
         } else { goto ERROR; }
     }
     font_rendering_state_t state = {
@@ -375,7 +382,8 @@ static esp_err_t http_api_post_framebuffer_text(httpd_req_t *req) {
 
     if (state.font == NULL) { 
         ESP_LOGE(TAG, "Could not find font %s", param_font);
-        return ESP_ERR_INVALID_ARG;
+        error = ESP_ERR_INVALID_ARG;
+        goto ERROR;
     }
 
     error = httpd_query_key_value(buf, "x", param_x, sizeof(param_x));
@@ -393,11 +401,13 @@ static esp_err_t http_api_post_framebuffer_text(httpd_req_t *req) {
     flipdot_set_dirty_flag(&flipdot);
 
     free(buf);
+    free(text);
 
     return http_api_get_framebuffer(req);
 
 ERROR:
     free(buf);
+    free(text);
     return error;
 }
 

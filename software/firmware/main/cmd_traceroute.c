@@ -35,7 +35,7 @@ static int do_traceroute(int argc, char **argv) {
     int m = getaddrinfo(host, NULL, &hints, &result);
     if (m != 0) {
         printf("Could not getaddrinfo() for host %s", host);
-        freeaddrinfo(result);
+        // result is not allocated when getaddrinfo fails, do not free it
         return m;
     }
 
@@ -45,6 +45,11 @@ static int do_traceroute(int argc, char **argv) {
 
     size_t icmp_pkt_size = sizeof(struct icmp_echo_hdr) + data_size;
     struct icmp_echo_hdr *packet_hdr = mem_calloc(1, icmp_pkt_size);
+    if (packet_hdr == NULL) {
+        printf("Out of memory");
+        freeaddrinfo(result);
+        return 1;
+    }
     packet_hdr->type = ICMP_ECHO;
     packet_hdr->code = 0;
     packet_hdr->id = 0x2342;
@@ -56,6 +61,12 @@ static int do_traceroute(int argc, char **argv) {
     }
 
     int sock = socket(result->ai_family, SOCK_RAW, IP_PROTO_ICMP);
+    if (sock < 0) {
+        printf("Could not create socket, errno: %d", errno);
+        mem_free(packet_hdr);
+        freeaddrinfo(result);
+        return 1;
+    }
 
     // set socket timeout
     struct timeval timeout;
@@ -96,6 +107,10 @@ static int do_traceroute(int argc, char **argv) {
         }
         printf("\n");
     }
+
+    close(sock);
+    mem_free(packet_hdr);
+    freeaddrinfo(result);
 
     return 0;
 }

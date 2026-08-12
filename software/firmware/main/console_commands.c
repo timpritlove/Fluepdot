@@ -31,6 +31,10 @@ static const char *s_ipv6_addr_types[] = {
     };
 
 static int console_show_ip(int argc, char **argv) {
+    if (wifi.netif == NULL) {
+        printf("WiFi is disabled, no IP configuration available.\n");
+        return 1;
+    }
     esp_netif_ip_info_t ip;
     ESP_ERROR_CHECK(esp_netif_get_ip_info(wifi.netif, &ip));
     printf("- IPv4 address: " IPSTR "\n", IP2STR(&ip.ip));
@@ -219,47 +223,55 @@ esp_err_t console_register_config_reset(void) {
     return ESP_OK;
 }
 
-static struct {
+typedef struct {
     struct arg_str *ssid;
     struct arg_str *password;
     struct arg_end *end;
-} console_wifi_args;
+} console_wifi_args_t;
+
+static console_wifi_args_t console_wifi_ap_args;
+static console_wifi_args_t console_wifi_station_args;
+
+static void console_config_wifi_apply(console_wifi_args_t* args, system_configuration_wifi_mode_t mode) {
+    system_configuration.wifi.mode = mode;
+    // reserve one byte for the NUL terminator
+    size_t ssid_len = strnlen(args->ssid->sval[0], sizeof(system_configuration.wifi.ssid) - 1);
+    bzero(system_configuration.wifi.ssid, sizeof(system_configuration.wifi.ssid));
+    strncpy(system_configuration.wifi.ssid,
+            args->ssid->sval[0],
+            ssid_len);
+    bzero(system_configuration.wifi.password, sizeof(system_configuration.wifi.password));
+    if (args->password->count > 0) {
+        size_t password_len = strnlen(args->password->sval[0], sizeof(system_configuration.wifi.password) - 1);
+        strncpy(system_configuration.wifi.password,
+                args->password->sval[0],
+                password_len);
+    }
+}
 
 static int console_config_wifi_ap(int argc, char **argv) {
-    int nerrors = arg_parse(argc, argv, (void **) &console_wifi_args);
+    int nerrors = arg_parse(argc, argv, (void **) &console_wifi_ap_args);
     if (nerrors != 0) {
-        arg_print_errors(stderr, console_wifi_args.end, argv[0]);
+        arg_print_errors(stderr, console_wifi_ap_args.end, argv[0]);
         return 1;
     }
 
-    system_configuration.wifi.mode = WIFI_AP;
-    size_t ssid_len = strnlen(console_wifi_args.ssid->sval[0], sizeof(system_configuration.wifi.ssid));
-    bzero(system_configuration.wifi.ssid, sizeof(system_configuration.wifi.ssid));
-    strncpy(system_configuration.wifi.ssid,
-            console_wifi_args.ssid->sval[0],
-            ssid_len);
-    bzero(system_configuration.wifi.password, sizeof(system_configuration.wifi.password));
-    if (console_wifi_args.password->sval[0]) {
-        size_t password_len = strnlen(console_wifi_args.password->sval[0], sizeof(system_configuration.wifi.password));
-        strncpy(system_configuration.wifi.password,
-                console_wifi_args.password->sval[0],
-                password_len);
-    }
+    console_config_wifi_apply(&console_wifi_ap_args, WIFI_AP);
 
     return 0;
 }
 
 esp_err_t console_register_config_wifi_ap(void) {
-    console_wifi_args.ssid = arg_str1(NULL, NULL, "<ssid>", "WiFi SSID");
-    console_wifi_args.password = arg_str0(NULL, NULL, "<password>", "WiFi Password");
-    console_wifi_args.end = arg_end(2);
+    console_wifi_ap_args.ssid = arg_str1(NULL, NULL, "<ssid>", "WiFi SSID");
+    console_wifi_ap_args.password = arg_str0(NULL, NULL, "<password>", "WiFi Password");
+    console_wifi_ap_args.end = arg_end(2);
     
     const esp_console_cmd_t cmd = {
         .command = "config_wifi_ap",
         .help = "Configure AP mode",
         .hint = NULL,
         .func = &console_config_wifi_ap,
-        .argtable = &console_wifi_args,
+        .argtable = &console_wifi_ap_args,
     };
 
     ERROR_CHECK(esp_console_cmd_register(&cmd));
@@ -268,40 +280,28 @@ esp_err_t console_register_config_wifi_ap(void) {
 }
 
 static int console_config_wifi_station(int argc, char **argv) {
-    int nerrors = arg_parse(argc, argv, (void **) &console_wifi_args);
+    int nerrors = arg_parse(argc, argv, (void **) &console_wifi_station_args);
     if (nerrors != 0) {
-        arg_print_errors(stderr, console_wifi_args.end, argv[0]);
+        arg_print_errors(stderr, console_wifi_station_args.end, argv[0]);
         return 1;
     }
 
-    system_configuration.wifi.mode = WIFI_STATION;
-    size_t ssid_len = strnlen(console_wifi_args.ssid->sval[0], sizeof(system_configuration.wifi.ssid));
-    bzero(system_configuration.wifi.ssid, sizeof(system_configuration.wifi.ssid));
-    strncpy(system_configuration.wifi.ssid,
-            console_wifi_args.ssid->sval[0],
-            ssid_len);
-    bzero(system_configuration.wifi.password, sizeof(system_configuration.wifi.password));
-    if (console_wifi_args.password->sval[0]) {
-        size_t password_len = strnlen(console_wifi_args.password->sval[0], sizeof(system_configuration.wifi.password));
-        strncpy(system_configuration.wifi.password,
-                console_wifi_args.password->sval[0],
-                password_len);
-    }
+    console_config_wifi_apply(&console_wifi_station_args, WIFI_STATION);
 
     return 0;
 }
 
 esp_err_t console_register_config_wifi_station(void) {
-    console_wifi_args.ssid = arg_str1(NULL, NULL, "<ssid>", "WiFi SSID");
-    console_wifi_args.password = arg_str0(NULL, NULL, "<password>", "WiFi Password");
-    console_wifi_args.end = arg_end(2);
+    console_wifi_station_args.ssid = arg_str1(NULL, NULL, "<ssid>", "WiFi SSID");
+    console_wifi_station_args.password = arg_str0(NULL, NULL, "<password>", "WiFi Password");
+    console_wifi_station_args.end = arg_end(2);
 
     const esp_console_cmd_t cmd = {
         .command = "config_wifi_station",
         .help = "Configure station mode",
         .hint = NULL,
         .func = &console_config_wifi_station,
-        .argtable = &console_wifi_args,
+        .argtable = &console_wifi_station_args,
     };
 
     ERROR_CHECK(esp_console_cmd_register(&cmd));
@@ -317,7 +317,7 @@ static struct {
 static int console_config_rendering_mode(int argc, char **argv) {
     int nerrors = arg_parse(argc, argv, (void **)&console_rendering_mode_args);
     if (nerrors != 0) {
-        arg_print_errors(stderr, console_wifi_args.end, argv[0]);
+        arg_print_errors(stderr, console_rendering_mode_args.end, argv[0]);
         return 1;
     }
 
@@ -361,7 +361,8 @@ static int console_config_hostname(int argc, char **argv) {
         arg_print_errors(stderr, console_hostname_args.end, argv[0]);
         return 1;
     }
-    size_t len = strnlen(console_hostname_args.hostname->sval[0], sizeof(system_configuration.hostname));
+    // reserve one byte for the NUL terminator
+    size_t len = strnlen(console_hostname_args.hostname->sval[0], sizeof(system_configuration.hostname) - 1);
     bzero(system_configuration.hostname, sizeof(system_configuration.hostname));
     strncpy(system_configuration.hostname,
             console_hostname_args.hostname->sval[0],
@@ -396,11 +397,12 @@ static int console_config_panel_layout(int argc, char **argv) {
     int nerrors = arg_parse(argc, argv, (void **) &console_config_panel_layout_args);
     if (nerrors != 0) {
         arg_print_errors(stderr, console_config_panel_layout_args.end, argv[0]);
+        return 1;
     }
     
     int panel_count = console_config_panel_layout_args.panel_sizes->count;
 
-    if (panel_count <= 0 || panel_count >= FLIPDOT_MAX_SUPPORTED_PANELS) {
+    if (panel_count <= 0 || panel_count > FLIPDOT_MAX_SUPPORTED_PANELS) {
         printf("Panel count of %d not allowed", panel_count);
         return -1;
     }
@@ -481,30 +483,32 @@ esp_err_t console_framebuf64(int argc, char **argv) {
     }
     
     size_t out_len = 0;
+    size_t expected_len = 2 * flipdot.width;
     unsigned char * buf = base64_decode(console_framebuf64_args.framebuf64->sval[0],
         strlen(console_framebuf64_args.framebuf64->sval[0]),
         &out_len);
-    if (out_len != 230) {
-        printf("Expected that base64 to decode to 230 bytes, got %zu!", out_len);
-        return 1;
-    }
     if (buf == NULL) {
         printf("base64decode failed!");
         return 2;
     }
-    memcpy(flipdot.framebuffer->columns, buf, 230);
+    if (out_len != expected_len) {
+        printf("Expected that base64 to decode to %zu bytes, got %zu!", expected_len, out_len);
+        free(buf);
+        return 1;
+    }
+    memcpy(flipdot.framebuffer->columns, buf, expected_len);
     free(buf);
     flipdot_set_dirty_flag(&flipdot);
     return 0;
 }
 
 esp_err_t console_register_framebuf64(void) {
-    console_framebuf64_args.framebuf64 = arg_str1(NULL, NULL, "<framebuf64>", "base64 encoded 230 bytes long framebuffer");
+    console_framebuf64_args.framebuf64 = arg_str1(NULL, NULL, "<framebuf64>", "base64 encoded raw framebuffer (2 bytes per column)");
     console_framebuf64_args.end = arg_end(1);
 
     const esp_console_cmd_t cmd = {
         .command = "framebuf64",
-        .help = "Print a base64 encoded framebuffer",
+        .help = "Set the framebuffer from a base64 encoded raw framebuffer",
         .hint = NULL,
         .func = &console_framebuf64,
         .argtable = &console_framebuf64_args,

@@ -58,6 +58,11 @@ static int do_render_font(int argc, char **argv) {
     }
     if (render_font_args.font_name->count > 0) {
         font = mf_find_font(render_font_args.font_name->sval[0]);
+        if (font == NULL) {
+            printf("Could not find font '%s'. Use show_fonts to list available fonts.\n",
+                    render_font_args.font_name->sval[0]);
+            return 1;
+        }
     }
 
     if (flipdot.framebuffer == NULL) {

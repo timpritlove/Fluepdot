@@ -29,7 +29,7 @@ void flipdot_framebuffer_clear(framebuffer_t* framebuffer) {
 bool flipdot_framebuffer_get_pixel(framebuffer_t* framebuffer, uint8_t x, uint8_t y) {
     FLIPDOT_ASSERT_NOT_NULL(framebuffer, false);
 
-    if ((x >= framebuffer->width) || (y > 16)) {
+    if ((x >= framebuffer->width) || (y >= 16)) {
         return false;
     }
 
@@ -47,7 +47,7 @@ bool flipdot_framebuffer_get_pixel(framebuffer_t* framebuffer, uint8_t x, uint8_
 esp_err_t flipdot_framebuffer_set_pixel(framebuffer_t* framebuffer, uint8_t x, uint8_t y, bool value) {
     FLIPDOT_ASSERT_NOT_NULL(framebuffer, ESP_ERR_INVALID_ARG);
 
-    if ((x >= framebuffer->width) || (y > 16)) {
+    if ((x >= framebuffer->width) || (y >= 16)) {
         return ESP_ERR_INVALID_ARG;
     }
 

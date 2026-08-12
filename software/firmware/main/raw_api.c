@@ -28,6 +28,8 @@ void raw_api_task(void *pvParams) {
         int sock = socket(AF_INET6, SOCK_DGRAM, IPPROTO_IPV6);
         if (sock < 0) {
             ESP_LOGE(TAG, "Unable to create socket, errno: %d", errno);
+            vTaskDelay(pdMS_TO_TICKS(1000));
+            continue;
         }
 
         int mode = 0;
@@ -41,6 +43,9 @@ void raw_api_task(void *pvParams) {
         int err = bind(sock, (struct sockaddr*)&dest_addr, sizeof(dest_addr));
         if (err < 0) {
             ESP_LOGE(TAG, "Could not bind socket, errno: %d", errno);
+            close(sock);
+            vTaskDelay(pdMS_TO_TICKS(1000));
+            continue;
         }
 
         while (1) {
@@ -49,6 +54,7 @@ void raw_api_task(void *pvParams) {
             int len = recvfrom(sock, rx_buf, rx_buf_len, 0, (struct sockaddr*)&source_addr, &socklen);
             if (len < 0) {
                 ESP_LOGE(TAG, "recvfrom failed: errno %d", errno);
+                break;
             } else {
                 if (source_addr.sin6_family == PF_INET) {
                     inet_ntoa_r(((struct sockaddr_in *)&source_addr)->sin_addr.s_addr, addr_str, sizeof(addr_str) - 1);
@@ -57,14 +63,16 @@ void raw_api_task(void *pvParams) {
                 }
                 ESP_LOGI(TAG, "Received %d bytes from %s", len, addr_str);
                 if (len != 2 * flipdot.width) {
-                    ESP_LOGE(TAG, "Expected %d bytes, but expected %d", len, 2 * flipdot.width);
+                    ESP_LOGE(TAG, "Got %d bytes, but expected %d", len, 2 * flipdot.width);
                 } else {
                     ESP_LOGI(TAG, "Received frame via raw api");
-                    memcpy(&flipdot.framebuffer->columns, rx_buf, 2 * flipdot.width);
+                    memcpy(flipdot.framebuffer->columns, rx_buf, 2 * flipdot.width);
                     flipdot_set_dirty_flag(&flipdot);
                 }
             }
         }
+
+        close(sock);
     }
 }
 

@@ -14,13 +14,13 @@ static struct {
     struct arg_end *end;
 } host_cmd_args;
 
-static int do_host_lookup(char* hostname, int ai_family) {
+static int do_host_lookup(const char* hostname, int ai_family) {
     struct addrinfo hints = { 0 }, *results, *result = NULL;
     hints.ai_family = ai_family;
 
     int m = getaddrinfo(hostname, NULL, &hints, &results);
     if (m != 0) {
-        freeaddrinfo(results);
+        // results is not allocated when getaddrinfo fails, do not free it
         return m;
     }
 
@@ -50,7 +50,7 @@ static int do_host_cmd(int argc, char**argv) {
     ret_v6 = do_host_lookup(host_cmd_args.host->sval[0], AF_INET6);
     ret_v4 = do_host_lookup(host_cmd_args.host->sval[0], AF_INET);
 
-    if (ret_v6 || ret_v4 == 0) {
+    if (ret_v6 == 0 || ret_v4 == 0) {
         return 0;
     }
     return 1;
