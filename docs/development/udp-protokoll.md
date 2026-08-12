@@ -17,7 +17,12 @@ aus `app_main`.
 Ein Datagramm = ein kompletter Framebuffer:
 
 - Länge: exakt `2 × Breite` Bytes (z. B. 230 Bytes bei Breite 115).
-  Pakete mit abweichender Länge werden verworfen (nur Log-Meldung).
+  Pakete mit abweichender Länge (zu kurz **oder** zu lang) werden ohne
+  Antwort verworfen (nur Log-Warnung), damit fremde Pakete nicht als
+  Matrixdaten interpretiert werden. Der Empfangspuffer ist bewusst ein Byte
+  größer als ein Frame: lwIPs `recvfrom()` ignoriert `MSG_TRUNC` und meldet
+  nie mehr als die Puffergröße – ohne das Extra-Byte würden übergroße
+  Pakete auf exakt `2 × Breite` Bytes gekürzt und fälschlich akzeptiert.
 - Inhalt: das rohe `columns`-Array des Framebuffers – pro Spalte ein
   `uint16_t` (Little-Endian, ESP32-nativ), Spalte 0 zuerst (x von links
   nach rechts).
