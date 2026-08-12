@@ -168,7 +168,7 @@ ldgen_libraries.in
 ota_data_initial.bin
 partition_table/
 project_description.json
-project_elf_src.c
+project_elf_src*.c
 sdkconfig
 sdkconfig.old
 
@@ -182,5 +182,6 @@ flash_args
 flash_args.in
 otadata-flash_args
 partition_table-flash_args
+partition-table-flash_args
 x509_crt_bundle.S
 managed_components
