@@ -77,8 +77,8 @@ die komplette Konfiguration. Zwei Optionen:
 ## 5. Firmware-Verschlankung (Voraussetzung für OTA)
 
 - Fonts entfernen (siehe [fonts.md](fonts.md)): ~43 KB+. **Erledigt (August 2026).**
-- Bluetooth/NimBLE deaktivieren (`CONFIG_BT_ENABLED=n`): signifikant
-  Flash/RAM, kein Funktionsverlust (es gibt keinen BLE-Code).
+- Bluetooth/NimBLE deaktivieren (`CONFIG_BT_ENABLED=n`): spart Flash/RAM,
+  kein Funktionsverlust (es gibt keinen BLE-Code). **Erledigt (August 2026).**
 - RS485-Konfigurationsfelder entfernen oder Feature endlich implementieren –
   im Redesign entscheiden.
 - Danach Partitionsumbau auf `ota_0`/`ota_1` und OTA-Implementierung
@@ -87,7 +87,7 @@ die komplette Konfiguration. Zwei Optionen:
 ## Vorgeschlagene Reihenfolge
 
 1. Offensichtliche Bugfixes (erledigt, siehe [bugs.md](bugs.md))
-2. Font-Entfernung + BLE-Abschaltung (schrumpft das Image)
+2. Font-Entfernung + BLE-Abschaltung (erledigt; Image ~64 KB kleiner)
 3. Config-Redesign (NVS, gemeinsame Schicht, Ports, HTTP-Auth, Hot-Apply)
 4. WLAN-/Task-Resilienz
 5. Partitionsumbau + OTA

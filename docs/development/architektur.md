@@ -83,6 +83,7 @@ sind mit dieser Tabelle nicht möglich (siehe
 - `CONFIG_PARTITION_TABLE_CUSTOM=y` mit `partitions.csv`
 - `CONFIG_FREERTOS_USE_TRACE_FACILITY=y` + Stats-Formatting (für `show_tasks`)
 - 4 MB Flash (`CONFIG_ESPTOOLPY_FLASHSIZE_4MB=y`)
-- `CONFIG_BT_ENABLED=y` / NimBLE aktiviert – **es gibt aber keinen BLE-Code
-  in der Applikation**; das kostet nur Flash/RAM
+- `CONFIG_BT_ENABLED=n` – Bluetooth ist seit August 2026 deaktiviert
+  (es gab nie BLE-Code in der Applikation, der aktivierte Controller
+  kostete nur Flash/RAM)
 - `CONFIG_LWIP_SNMP_SUPPORT` ist auskommentiert – SNMP ist nicht im Build
