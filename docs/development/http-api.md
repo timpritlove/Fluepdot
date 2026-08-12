@@ -38,8 +38,11 @@ Alle Handler in `main/httpd.c`.
 | GET | `/rendering/timings` | – | pro Spalte 3 Zeilen `%05d\n` (pre/clear/set, Einheit 50 µs) | |
 | POST | `/rendering/timings` | Body: gleiches Format | wie GET | Nicht persistent |
 | GET | `/rendering/wait` | – | `ok` oder HTTP 500 | Wartet bis zu 3 s auf `FLIPDOT_RENDERING_DONE_BIT` |
-| GET | `/fonts` | – | pro Font 2 Zeilen: `full_name`, `short_name` | |
-| POST | `/framebuffer/text` | Query `font` (Default `DejaVuSans12`), `x`, `y`; Body: Text (max. 64 Bytes) | GET `/framebuffer`-Antwort | Löscht den Framebuffer, rendert Text, Dirty-Flag |
+
+Entfernt (August 2026): `GET /fonts` und `POST /framebuffer/text` – das
+Font-Management wurde komplett aus der Firmware entfernt (siehe
+[fonts.md](fonts.md)). Text-Rendering erfolgt clientseitig, das Ergebnis wird
+per `POST /framebuffer` geschickt.
 
 ## Timings-Format
 

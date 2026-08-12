@@ -18,7 +18,7 @@ Stand der Analyse: August 2026, Branch `master`.
 | [http-api.md](http-api.md) | Alle HTTP-Endpoints, Framebuffer-Encoding |
 | [udp-protokoll.md](udp-protokoll.md) | UDP-Raw-API auf Port 1337 |
 | [flipdot-treiber.md](flipdot-treiber.md) | Hardware-Ansteuerung, Rendering-Pipeline, Parallelisierungs-Analyse |
-| [fonts.md](fonts.md) | Font-Management (mcufont) und Entfernungsplan |
+| [fonts.md](fonts.md) | Font-Management (mcufont) – im August 2026 entfernt |
 | [firmware-update.md](firmware-update.md) | Flash-Vorgang, Tools, OTA-Bewertung |
 | [bugs.md](bugs.md) | Gefundene Bugs mit Status |
 | [vorschlaege.md](vorschlaege.md) | Vorschläge: Konfigurations-Vereinheitlichung, HTTP-Auth, Ports |

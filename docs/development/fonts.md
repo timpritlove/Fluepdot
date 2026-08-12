@@ -1,6 +1,14 @@
-# Font-Management (Ist-Zustand und Entfernungsplan)
+# Font-Management (entfernt im August 2026)
 
-## Ist-Zustand
+> **Status: umgesetzt.** Das Font-Management wurde vollständig aus der
+> Firmware entfernt (mcufont-Komponente, CLI-Kommandos `show_fonts`/
+> `render_font`, HTTP-Endpoints `GET /fonts` und `POST /framebuffer/text`).
+> Text-Rendering erfolgt jetzt clientseitig; das Ergebnis wird als
+> Framebuffer über `POST /framebuffer` (ASCII) oder die UDP-Raw-API (binär)
+> geschickt. Der folgende Text dokumentiert den Zustand **vor** der
+> Entfernung und den umgesetzten Plan.
+
+## Ist-Zustand vor der Entfernung
 
 Die Firmware bündelt den Font-Renderer **mcufont** als vendored Komponente:
 `software/firmware/components/mcufont/` (Decoder in `mcufont/decoder/`).
@@ -41,13 +49,13 @@ Der Framebuffer-/Pixel-/UDP-Pfad hat **keine** Abhängigkeit auf Fonts.
 Toter Code: `main/font_rendinger_old.c` ist nicht in `main/CMakeLists.txt`
 eingebunden (verwaiste Datei, Tippfehler im Namen inklusive).
 
-## Entfernungsplan
+## Entfernungsplan (umgesetzt)
 
 Ziel laut Projektentscheidung: Font-Management komplett aus der Firmware
 entfernen und sich auf direkte, effiziente Framebuffer-Manipulation
 konzentrieren (Text-Rendering übernimmt künftig der Client).
 
-Zu entfernende Teile:
+Entfernte Teile:
 
 1. Komponente `software/firmware/components/mcufont/` komplett.
 2. `main/font_rendering.c`, `main/include/font_rendering.h`.

@@ -63,8 +63,9 @@ HTTP-/UDP-Ports.
 |---|---|---|---|
 | `flipdot_clear` | `[--invert]` | Alle Pixel löschen bzw. mit `--invert` alle setzen; setzt Dirty-Flag | `console_commands.c` |
 | `framebuf64` | `<base64>` | Base64-dekodierter Roh-Framebuffer (`2 × Breite` Bytes, gleiche Spaltenkodierung wie UDP-API) wird übernommen; setzt Dirty-Flag | `console_commands.c` |
-| `show_fonts` | – | Listet einkompilierte mcufont-Fonts | `cmd_font_rendering.c` |
-| `render_font` | `[-x <int>] [-y <int>] [-f <font>] <text>` | Rendert Text in den Framebuffer (ohne vorheriges Löschen); setzt Dirty-Flag | `cmd_font_rendering.c` |
+
+Entfernt (August 2026): `show_fonts` und `render_font` – das Font-Management
+wurde komplett aus der Firmware entfernt (siehe [fonts.md](fonts.md)).
 
 ## Abweichungen zur offiziellen Doku
 

@@ -76,7 +76,7 @@ die komplette Konfiguration. Zwei Optionen:
 
 ## 5. Firmware-Verschlankung (Voraussetzung für OTA)
 
-- Fonts entfernen (siehe [fonts.md](fonts.md)): ~43 KB+.
+- Fonts entfernen (siehe [fonts.md](fonts.md)): ~43 KB+. **Erledigt (August 2026).**
 - Bluetooth/NimBLE deaktivieren (`CONFIG_BT_ENABLED=n`): signifikant
   Flash/RAM, kein Funktionsverlust (es gibt keinen BLE-Code).
 - RS485-Konfigurationsfelder entfernen oder Feature endlich implementieren –

@@ -10,8 +10,6 @@ software/firmware/
 │   ├── console.c            # Konsolen-Setup (esp_console + linenoise), Konsolen-Task
 │   ├── console_commands.c   # Die meisten CLI-Kommandos
 │   ├── cmd_ping.c / cmd_host.c / cmd_traceroute.c  # Netzwerk-Diagnose-Kommandos
-│   ├── cmd_font_rendering.c # CLI-Kommandos show_fonts / render_font
-│   ├── font_rendering.c     # Glue-Code zwischen mcufont und Framebuffer
 │   ├── httpd.c              # HTTP-API (esp_http_server)
 │   ├── raw_api.c            # UDP-Raw-API (Port 1337)
 │   ├── wifi.c               # WLAN AP/Station
@@ -19,8 +17,7 @@ software/firmware/
 │   ├── base64.c, crc16.c, net_util.c  # Hilfsfunktionen
 │   └── Kconfig.projbuild    # Kconfig-Defaults für die Werkskonfiguration
 ├── components/
-│   ├── flipdot/             # Flipdot-Treiber (Framebuffer, Rendering, SPI/GPIO)
-│   └── mcufont/             # Vendored Font-Renderer inkl. einkompilierter Fonts
+│   └── flipdot/             # Flipdot-Treiber (Framebuffer, Rendering, SPI/GPIO)
 ├── partitions.csv           # Eigene Partitionstabelle
 └── sdkconfig.defaults       # Build-Defaults
 ```

@@ -3,9 +3,6 @@ COPY --chown=esp:esp ./ /fluepdot
 
 # build the esp32 firmware
 ENV PROJ_PATH=/fluepdot
-WORKDIR /fluepdot/software/firmware/components/mcufont/mcufont
-RUN make -j -C encoder mcufont
-RUN make -j -C fonts
 WORKDIR /fluepdot/software/firmware
 RUN cmake . && make all -j
 

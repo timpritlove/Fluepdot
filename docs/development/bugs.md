@@ -51,5 +51,5 @@ Redesigns, siehe [vorschlaege.md](vorschlaege.md)).
 | F19 | `software/service_utility/main.go` | Flash-Offsets falsch: Partitionstabelle 0x800 (statt 0x8000), Bootloader 0xd000 (statt 0x1000), `ota_data_initial.bin` überschrieb denselben Offset 0xd000 | behoben |
 | F22 | `main/wifi.c` | Nach dem ersten Connect wird der IP-Event-Handler deregistriert ⇒ `retry_count` wird bei späteren Reconnects nie zurückgesetzt, `STA_LOST_IP` wird nie behandelt; nach `WIFI_MAXIMUM_RETRY` läuft der Hintergrund-Reconnect trotzdem endlos | offen (Teil des Resilienz-Redesigns) |
 | F23 | `main/console_commands.c` (`config_reset`) | Setzt nur den RAM-Zustand zurück; Name/Hilfetext („Factory reset“) suggerieren Persistenz | offen (Verhalten dokumentiert in usb-cli.md) |
-| F24 | `components/mcufont` | Drei Fonts mit identischem `full_name` („DejaVu Sans Book 12“) ⇒ mehrdeutige Suche | offen (entfällt mit Font-Entfernung) |
+| F24 | `components/mcufont` | Drei Fonts mit identischem `full_name` („DejaVu Sans Book 12“) ⇒ mehrdeutige Suche | erledigt (Font-Management komplett entfernt) |
 | F25 | `sdkconfig.defaults` | NimBLE/Bluetooth aktiviert, obwohl kein BLE-Code existiert (Flash-/RAM-Verschwendung) | offen |

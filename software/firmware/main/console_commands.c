@@ -16,7 +16,6 @@
 #include "base64.h"
 #include "wifi.h"
 #include "console_commands.h"
-#include "font_rendering.h"
 #include "esp_netif.h"
 
 static const char* TAG = "console_commands.c";

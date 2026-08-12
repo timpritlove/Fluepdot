@@ -11,7 +11,6 @@
 #include "cmd_ping.h"
 #include "cmd_host.h"
 #include "cmd_traceroute.h"
-#include "cmd_font_rendering.h"
 #include "util.h"
 
 static const char* TAG = "console.c";
@@ -37,8 +36,6 @@ esp_err_t console_initialize(system_configuration_t* system_configuration) {
     ERROR_CHECK(console_register_config_hostname());
     ERROR_CHECK(console_register_config_panel_layout());
     ERROR_CHECK(console_register_flipdot_clear());
-    ERROR_CHECK(console_register_show_fonts());
-    ERROR_CHECK(console_register_render_font());
     ERROR_CHECK(console_register_framebuf64());
 
     snprintf(prompt, sizeof(prompt), LOG_COLOR_I "%s> " LOG_RESET_COLOR, system_configuration->hostname);

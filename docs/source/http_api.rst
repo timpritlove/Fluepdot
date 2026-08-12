@@ -82,29 +82,11 @@ Params
 
 Set the pixel at the give coordinate to dark.
 
-POST /framebuffer/text
-^^^^^^^^^^^^^^^^^^^^^^
+.. note::
 
-Params
-    POST
-        Text to display
-    GET
-        x
-            The x coordinate to render text to
-        y
-            The y coordinate to render text to
-        font
-            The font's name to use for rendering text. Retrieve a list of fonts at `GET /fonts`
-
-Render a string
-
-GET /fonts
-^^^^^^^^^^
-
-Returns a list of installed fonts
-
-For each font there are two lines: First the **full_name** and then **short_name** which is used with the `POST /framebuffer/text` eAPI endpoint.
-
+   The font rendering endpoints ``POST /framebuffer/text`` and ``GET /fonts``
+   were **removed** from the firmware. Render text on the client side and send
+   the result via ``POST /framebuffer`` instead.
 
 Rendering options
 =================

@@ -94,16 +94,12 @@ Type ``help`` to get a list of available commands:
       (2 bytes per column, see the UDP raw API for the encoding)
       <framebuf64>  base64 encoded framebuffer
     
-    show_fonts
-      List installed fonts
-    
-    render_font  [-x <int>] [-y <int>] [-f <font>] <text>
-      Render some text given some font
-      -x, --X=<int>  Depending on aligned, either left, center or right edge of target.
-      -y, --Y=<int>  Upper edge of the target area.
-      -f, --font=<font>  Name of font to use
-            <text>  Text to display
-    
+.. note::
+
+   The ``show_fonts`` and ``render_font`` commands were **removed** together
+   with the firmware's font rendering support. Render text on the client side
+   and send the result via the HTTP or UDP framebuffer APIs instead.
+
 Usage examples
 --------------
 
